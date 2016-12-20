@@ -16100,7 +16100,7 @@ function writeAccountData(id, title, type, number, date) {
     });
     accountRef.on('value', function (snapshot) {
         console.log('success');
-        window.location = '/';
+        window.location = '/iSave';
     });
 }
 
@@ -16191,7 +16191,7 @@ function updateBtnListener() {
             e.preventDefault();
             var accountRef = database.ref('account/' + id);
             accountRef.on('value', function (snapshot) {
-                window.location = '/update.html?id=' + id + '&title=' + snapshot.val().title + '&type=' + snapshot.val().type + '&number=' + snapshot.val().number + '&date=' + snapshot.val().date;
+                window.location = '/iSave/update.html?id=' + id + '&title=' + snapshot.val().title + '&type=' + snapshot.val().type + '&number=' + snapshot.val().number + '&date=' + snapshot.val().date;
             });
         });
     };
