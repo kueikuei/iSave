@@ -23,7 +23,7 @@ function writeAccountData(id, title, type, number, date) {
     });
     accountRef.on('value', function(snapshot) {
         console.log('success');
-        window.location = './';
+        window.location = '/iSave';
     });
 }
 
@@ -94,7 +94,7 @@ function updateData(id, title, type, number, date) {
     });
     accountRef.on('value', function(snapshot) {
         console.log('success');
-        window.location = './';
+        window.location = '/iSave';
     });
 }
 
@@ -103,7 +103,7 @@ function deleteData(id) {
     accountRef.remove();
     accountRef.on('value', function(snapshot) {
         console.log('success');
-        window.location = './';
+        window.location = '/iSave';
     });
 }
 
@@ -135,7 +135,7 @@ function updateBtnListener() {
             e.preventDefault();
             const accountRef = database.ref('account/' + id);
             accountRef.on('value', function(snapshot) {
-                window.location = 'iSave/update.html?id=' + id + '&title=' + snapshot.val().title + '&type=' + snapshot.val().type + '&number=' + snapshot.val().number + '&date=' + snapshot.val().date;
+                window.location = '/iSave/update.html?id=' + id + '&title=' + snapshot.val().title + '&type=' + snapshot.val().type + '&number=' + snapshot.val().number + '&date=' + snapshot.val().date;
             });
         });
     }
