@@ -8223,32 +8223,32 @@ module.exports = function(Chart) {
 	/**
 	 * TODO(SB) Move this method in the upcoming core.platform class.
 	 */
-	function acquireContext(item, config) {
-		if (typeof item === 'string') {
-			item = document.getElementById(item);
-		} else if (item.length) {
-			// Support for array based queries (such as jQuery)
-			item = item[0];
-		}
+	// function acquireContext(item, config) {
+	// 	if (typeof item === 'string') {
+	// 		item = document.getElementById(item);
+	// 	} else if (item.length) {
+	// 		// Support for array based queries (such as jQuery)
+	// 		item = item[0];
+	// 	}
 
-		if (item && item.canvas) {
-			// Support for any object associated to a canvas (including a context2d)
-			item = item.canvas;
-		}
+	// 	if (item && item.canvas) {
+	// 		// Support for any object associated to a canvas (including a context2d)
+	// 		item = item.canvas;
+	// 	}
 
-		if (item instanceof HTMLCanvasElement) {
-			// To prevent canvas fingerprinting, some add-ons undefine the getContext
-			// method, for example: https://github.com/kkapsner/CanvasBlocker
-			// https://github.com/chartjs/Chart.js/issues/2807
-			var context = item.getContext && item.getContext('2d');
-			if (context instanceof CanvasRenderingContext2D) {
-				initCanvas(item, config);
-				return context;
-			}
-		}
+	// 	if (item instanceof HTMLCanvasElement) {
+	// 		// To prevent canvas fingerprinting, some add-ons undefine the getContext
+	// 		// method, for example: https://github.com/kkapsner/CanvasBlocker
+	// 		// https://github.com/chartjs/Chart.js/issues/2807
+	// 		var context = item.getContext && item.getContext('2d');
+	// 		if (context instanceof CanvasRenderingContext2D) {
+	// 			initCanvas(item, config);
+	// 			return context;
+	// 		}
+	// 	}
 
-		return null;
-	}
+	// 	return null;
+	// }
 
 	/**
 	 * Initializes the given config with global and chart default values.
@@ -8274,66 +8274,66 @@ module.exports = function(Chart) {
 	 * @class Chart.Controller
 	 * The main controller of a chart.
 	 */
-	Chart.Controller = function(item, config, instance) {
-		var me = this;
+	// Chart.Controller = function(item, config, instance) {
+	// 	var me = this;
 
-		config = initConfig(config);
+	// 	config = initConfig(config);
 
-		var context = acquireContext(item, config);
-		var canvas = context && context.canvas;
-		var height = canvas && canvas.height;
-		var width = canvas && canvas.width;
+	// 	var context = acquireContext(item, config);
+	// 	var canvas = context && context.canvas;
+	// 	var height = canvas && canvas.height;
+	// 	var width = canvas && canvas.width;
 
-		instance.ctx = context;
-		instance.canvas = canvas;
-		instance.config = config;
-		instance.width = width;
-		instance.height = height;
-		instance.aspectRatio = height? width / height : null;
+	// 	instance.ctx = context;
+	// 	instance.canvas = canvas;
+	// 	instance.config = config;
+	// 	instance.width = width;
+	// 	instance.height = height;
+	// 	instance.aspectRatio = height? width / height : null;
 
-		me.id = helpers.uid();
-		me.chart = instance;
-		me.config = config;
-		me.options = config.options;
-		me._bufferedRender = false;
+	// 	me.id = helpers.uid();
+	// 	me.chart = instance;
+	// 	me.config = config;
+	// 	me.options = config.options;
+	// 	me._bufferedRender = false;
 
-		// Add the chart instance to the global namespace
-		Chart.instances[me.id] = me;
+	// 	// Add the chart instance to the global namespace
+	// 	Chart.instances[me.id] = me;
 
-		Object.defineProperty(me, 'data', {
-			get: function() {
-				return me.config.data;
-			}
-		});
+	// 	Object.defineProperty(me, 'data', {
+	// 		get: function() {
+	// 			return me.config.data;
+	// 		}
+	// 	});
 
-		if (!context || !canvas) {
-			// The given item is not a compatible context2d element, let's return before finalizing
-			// the chart initialization but after setting basic chart / controller properties that
-			// can help to figure out that the chart is not valid (e.g chart.canvas !== null);
-			// https://github.com/chartjs/Chart.js/issues/2807
-			console.error("Failed to create chart: can't acquire context from the given item");
-			return me;
-		}
+	// 	if (!context || !canvas) {
+	// 		// The given item is not a compatible context2d element, let's return before finalizing
+	// 		// the chart initialization but after setting basic chart / controller properties that
+	// 		// can help to figure out that the chart is not valid (e.g chart.canvas !== null);
+	// 		// https://github.com/chartjs/Chart.js/issues/2807
+	// 		console.error("Failed to create chart: can't acquire context from the given item");
+	// 		return me;
+	// 	}
 
-		helpers.retinaScale(instance);
+	// 	helpers.retinaScale(instance);
 
-		// Responsiveness is currently based on the use of an iframe, however this method causes
-		// performance issues and could be troublesome when used with ad blockers. So make sure
-		// that the user is still able to create a chart without iframe when responsive is false.
-		// See https://github.com/chartjs/Chart.js/issues/2210
-		if (me.options.responsive) {
-			helpers.addResizeListener(canvas.parentNode, function() {
-				me.resize();
-			});
+	// 	// Responsiveness is currently based on the use of an iframe, however this method causes
+	// 	// performance issues and could be troublesome when used with ad blockers. So make sure
+	// 	// that the user is still able to create a chart without iframe when responsive is false.
+	// 	// See https://github.com/chartjs/Chart.js/issues/2210
+	// 	if (me.options.responsive) {
+	// 		helpers.addResizeListener(canvas.parentNode, function() {
+	// 			me.resize();
+	// 		});
 
-			// Initial resize before chart draws (must be silent to preserve initial animations).
-			me.resize(true);
-		}
+	// 		// Initial resize before chart draws (must be silent to preserve initial animations).
+	// 		me.resize(true);
+	// 	}
 
-		me.initialize();
+	// 	me.initialize();
 
-		return me;
-	};
+	// 	return me;
+	// };
 
 	helpers.extend(Chart.Controller.prototype, /** @lends Chart.Controller */ {
 		initialize: function() {
@@ -10671,60 +10671,60 @@ module.exports = function(Chart) {
 },{}],28:[function(require,module,exports){
 'use strict';
 
-module.exports = function() {
+// module.exports = function() {
 
-	// Occupy the global variable of Chart, and create a simple base class
-	var Chart = function(item, config) {
-		this.controller = new Chart.Controller(item, config, this);
-		return this.controller;
-	};
+// 	// Occupy the global variable of Chart, and create a simple base class
+// 	var Chart = function(item, config) {
+// 		this.controller = new Chart.Controller(item, config, this);
+// 		return this.controller;
+// 	};
 
-	// Globally expose the defaults to allow for user updating/changing
-	Chart.defaults = {
-		global: {
-			responsive: true,
-			responsiveAnimationDuration: 0,
-			maintainAspectRatio: true,
-			events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
-			hover: {
-				onHover: null,
-				mode: 'nearest',
-				intersect: true,
-				animationDuration: 400
-			},
-			onClick: null,
-			defaultColor: 'rgba(0,0,0,0.1)',
-			defaultFontColor: '#666',
-			defaultFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-			defaultFontSize: 12,
-			defaultFontStyle: 'normal',
-			showLines: true,
+// 	// Globally expose the defaults to allow for user updating/changing
+// 	Chart.defaults = {
+// 		global: {
+// 			responsive: true,
+// 			responsiveAnimationDuration: 0,
+// 			maintainAspectRatio: true,
+// 			events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
+// 			hover: {
+// 				onHover: null,
+// 				mode: 'nearest',
+// 				intersect: true,
+// 				animationDuration: 400
+// 			},
+// 			onClick: null,
+// 			defaultColor: 'rgba(0,0,0,0.1)',
+// 			defaultFontColor: '#666',
+// 			defaultFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+// 			defaultFontSize: 12,
+// 			defaultFontStyle: 'normal',
+// 			showLines: true,
 
-			// Element defaults defined in element extensions
-			elements: {},
+// 			// Element defaults defined in element extensions
+// 			elements: {},
 
-			// Legend callback string
-			legendCallback: function(chart) {
-				var text = [];
-				text.push('<ul class="' + chart.id + '-legend">');
-				for (var i = 0; i < chart.data.datasets.length; i++) {
-					text.push('<li><span style="background-color:' + chart.data.datasets[i].backgroundColor + '"></span>');
-					if (chart.data.datasets[i].label) {
-						text.push(chart.data.datasets[i].label);
-					}
-					text.push('</li>');
-				}
-				text.push('</ul>');
+// 			// Legend callback string
+// 			legendCallback: function(chart) {
+// 				var text = [];
+// 				text.push('<ul class="' + chart.id + '-legend">');
+// 				for (var i = 0; i < chart.data.datasets.length; i++) {
+// 					text.push('<li><span style="background-color:' + chart.data.datasets[i].backgroundColor + '"></span>');
+// 					if (chart.data.datasets[i].label) {
+// 						text.push(chart.data.datasets[i].label);
+// 					}
+// 					text.push('</li>');
+// 				}
+// 				text.push('</ul>');
 
-				return text.join('');
-			}
-		}
-	};
+// 				return text.join('');
+// 			}
+// 		}
+// 	};
 
-	Chart.Chart = Chart;
+// 	Chart.Chart = Chart;
 
-	return Chart;
-};
+// 	return Chart;
+// };
 
 },{}],29:[function(require,module,exports){
 'use strict';
@@ -16118,7 +16118,7 @@ function readAccountData() {
             dataTableRef.innerHTML = str;
             infoRef.innerHTML = '<h4>目前沒有資料喔！</h4>';
         } else {
-            loadChart(data);
+            //loadChart(data);
             Object.keys(data).forEach(function (key, index) {
                 str += '\n          <tr>\n            <td>' + data[key].title + '</td>\n            <td>' + data[key].type + '</td>\n            <td>NT ' + data[key].number + '</td>\n            <td>' + data[key].date + '</td>\n            <td>  \n              <button type="button" class="btn btn-primary update-btn" data-id="' + key + '">\u7DE8\u8F2F</button>\n              <button type="button" class="btn btn-danger delete-btn" data-id="' + key + '">\u522A\u9664</button>\n            </td>\n          </tr>\n        ';
             });
@@ -16265,10 +16265,10 @@ function loadChart(rawData) {
             borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)']
         }]
     };
-    var myPieChart = new _chart2.default(ctxRef, {
-        type: 'pie',
-        data: data
-    });
+    // var myPieChart = new _chart2.default(ctxRef, {
+    //     type: 'pie',
+    //     data: data
+    // });
 }
 
 var path = window.location.pathname;
