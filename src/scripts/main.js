@@ -21,8 +21,10 @@ function writeAccountData(id, title, type, number, date) {
         number: number,
         date: date
     });
+    // 監聽，值有改變時，丟回參數snapshot
     accountRef.on('value', function(snapshot) {
         console.log('success');
+        // snapshot.val(); //可以取值
         window.location = '/iSave';
     });
 }
@@ -43,6 +45,7 @@ function readAccountData() {
     const infoRef = document.querySelector('#data-chart-info');
     const dataTableRef = document.querySelector('#data-table');
 
+    // 一次性讀取資料once
     accountRef.once('value').then(function(snapshot) {
         const data = snapshot.val();
         console.log(data);
@@ -230,10 +233,10 @@ function loadChart(rawData) {
 const path = window.location.pathname;
 
 switch (path) {
-    case '/create.html':
+    case '/iSave/create.html':
         submitListener('create');
         break;
-    case '/update.html':
+    case '/iSave/update.html':
         readFormData();
         submitListener('update');
         break;

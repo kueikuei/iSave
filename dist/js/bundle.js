@@ -16274,10 +16274,10 @@ function loadChart(rawData) {
 var path = window.location.pathname;
 
 switch (path) {
-    case '/create.html':
+    case '/iSave/create.html':
         submitListener('create');
         break;
-    case '/update.html':
+    case '/iSave/update.html':
         readFormData();
         submitListener('update');
         break;
