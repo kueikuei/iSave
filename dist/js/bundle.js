@@ -16149,7 +16149,7 @@ function updateData(id, title, type, number, date) {
     });
     accountRef.on('value', function (snapshot) {
         console.log('success');
-        window.location = '/';
+        window.location = '/iSave';
     });
 }
 
@@ -16158,7 +16158,7 @@ function deleteData(id) {
     accountRef.remove();
     accountRef.on('value', function (snapshot) {
         console.log('success');
-        window.location = '/';
+        window.location = '/iSave';
     });
 }
 
