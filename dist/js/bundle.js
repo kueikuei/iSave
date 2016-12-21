@@ -16098,8 +16098,10 @@ function writeAccountData(id, title, type, number, date) {
         number: number,
         date: date
     });
+    // 監聽，值有改變時，丟回參數snapshot
     accountRef.on('value', function (snapshot) {
         console.log('success');
+        // snapshot.val(); //可以取值
         window.location = '/iSave';
     });
 }
@@ -16110,6 +16112,7 @@ function readAccountData() {
     var infoRef = document.querySelector('#data-chart-info');
     var dataTableRef = document.querySelector('#data-table');
 
+    // 一次性讀取資料once
     accountRef.once('value').then(function (snapshot) {
         var data = snapshot.val();
         console.log(data);
