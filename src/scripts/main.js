@@ -35,6 +35,10 @@ function writeAccountData(id, title, type, number, date) {
 }
 
 function readFormData() {
+    // https://kueikuei.github.io/iSave/update.html?id=aa3adf70-5d20-4ae3-9430-dea95a3668c4&title=%E6%B8%AC%E8%A9%A61&type=others&number=999&date=2016-12-10
+    // window.location.search;
+    // "?id=aa3adf70-5d20-4ae3-9430-dea95a3668c4&title=%E6%B8%AC%E8%A9%A61&type=others&number=999&date=2016-12-10"
+
     // /iSave/update.html?id=66878e44-f77c-4cab-b5a7-7e3b33a52b5d&title=晚餐&type=eat&number=150&date=2016-12-09
     // ["id=66878e44-f77c-4cab-b5a7-7e3b33a52b5d", "title=%E6%99%9A%E9%A4%90", "type=eat", "number=150", "date=2016-12-09"]
     const params = window.location.search.replace('?', '').split('&');
@@ -101,7 +105,7 @@ function submitListener(submitType) {
 }
 
 function updateBtnListener() {
-    const updateBtns = document.querySelectorAll(".update-btn");
+    const updateBtns = document.querySelectorAll(".update-btn");//return nodelist
     console.log(updateBtns);
     for (let i = 0; i < updateBtns.length; i++) {
         updateBtns[i].addEventListener('click', function(e) {
@@ -195,6 +199,7 @@ function loadChart(rawData) {
     const ctxRef = document.querySelector('#data-chart');
     const infoRef = document.querySelector('#data-chart-info');
     for(const key in rawData) {
+      // hasOwnProperty做檢查
       if (rawData.hasOwnProperty(key)) {
         const type = rawData[key].type;
         const number = rawData[key].number;
@@ -250,7 +255,7 @@ function loadChart(rawData) {
         }]
     };
     const myPieChart = new Chart(ctxRef, {
-        type: 'pie',
+        type: 'polarArea',
         data: data,
     });      
 }
