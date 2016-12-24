@@ -16087,11 +16087,16 @@ var config = {
     messagingSenderId: "254973667568"
 };
 
+//open identical firebase account
 firebase.initializeApp(config);
+// open firevase database
 var database = firebase.database();
 
+//---------CRUD Function-----------
 function writeAccountData(id, title, type, number, date) {
+    //call data by ref
     var accountRef = database.ref('account/' + id);
+    //input data into firebase
     accountRef.set({
         title: title,
         type: type,
@@ -16106,36 +16111,14 @@ function writeAccountData(id, title, type, number, date) {
     });
 }
 
-function readAccountData() {
-    var str = '\n    <thead>\n      <tr>\n        <th>\u6D88\u8CBB\u9805\u76EE</th>\n        <th>\u6D88\u8CBB\u985E\u5225</th>\n        <th>\u6D88\u8CBB\u91D1\u984D</th>\n        <th>\u6D88\u8CBB\u6642\u9593</th>\n        <th>\u64CD\u4F5C</th>\n      </tr>\n    </thead>  \n  ';
-    var accountRef = database.ref('account/');
-    var infoRef = document.querySelector('#data-chart-info');
-    var dataTableRef = document.querySelector('#data-table');
-
-    // 一次性讀取資料once
-    accountRef.once('value').then(function (snapshot) {
-        var data = snapshot.val();
-        console.log(data);
-        if (data === null) {
-            str += '<h4>目前沒有資料喔！</h4>';
-            dataTableRef.innerHTML = str;
-            infoRef.innerHTML = '<h4>目前沒有資料喔！</h4>';
-        } else {
-            loadChart(data);
-            Object.keys(data).forEach(function (key, index) {
-                str += '\n          <tr>\n            <td>' + data[key].title + '</td>\n            <td>' + data[key].type + '</td>\n            <td>NT ' + data[key].number + '</td>\n            <td>' + data[key].date + '</td>\n            <td>  \n              <button type="button" class="btn btn-primary update-btn" data-id="' + key + '">\u7DE8\u8F2F</button>\n              <button type="button" class="btn btn-danger delete-btn" data-id="' + key + '">\u522A\u9664</button>\n            </td>\n          </tr>\n        ';
-            });
-            document.querySelector('#data-table').innerHTML = str;
-            updateBtnListener();
-            deleteBtnListener();
-        }
-    });
-}
-
 function readFormData() {
+    // /iSave/update.html?id=66878e44-f77c-4cab-b5a7-7e3b33a52b5d&title=晚餐&type=eat&number=150&date=2016-12-09
+    // ["id=66878e44-f77c-4cab-b5a7-7e3b33a52b5d", "title=%E6%99%9A%E9%A4%90", "type=eat", "number=150", "date=2016-12-09"]
     var params = window.location.search.replace('?', '').split('&');
     console.log(params);
     var addFormRef = document.querySelector("#add-form");
+    //Get data by URI, and write into interface 
+    //by decodeURI() to analysis to correct words
     addFormRef.title.value = decodeURI(params[1].split('=')[1]);
     addFormRef.type.value = params[2].split('=')[1];
     addFormRef.number.value = params[3].split('=')[1];
@@ -16164,19 +16147,29 @@ function deleteData(id) {
         window.location = '/iSave';
     });
 }
+//---------CRUD Function-----------
 
+//---------------Button Listener----------------
+// 提交表單就去監聽
+//submitType='create'
 function submitListener(submitType) {
+    // submitType='create' or 'update'
+    // add-form取到表單
     var addFormRef = document.querySelector("#add-form");
     addFormRef.addEventListener('submit', function (e) {
-        e.preventDefault();
+        e.preventDefault(); //不做原始事情，因為要做Ajax跟資料庫互動
+        //cteate identical ID
         var id = _uuid2.default.v4();
+        // 判斷前端輸入資訊。input中的name去判斷要取出的，最後得到其value存入變數
         var title = addFormRef.title.value;
         var type = addFormRef.type.value;
         var number = addFormRef.number.value;
         var date = addFormRef.date.value;
         if (submitType === 'create') {
+            // by writeAccountData() connect to firebase           
             writeAccountData(id, title, type, number, date);
         } else {
+            //update data
             var params = window.location.search.replace('?', '').split('&');
             var _id = params[0].split('=')[1];
             updateData(_id, title, type, number, date);
@@ -16208,8 +16201,11 @@ function deleteBtnListener() {
     var deleteBtns = document.querySelectorAll(".delete-btn");
     console.log(deleteBtns);
 
+    //add eventlistener to all delete button
+
     var _loop2 = function _loop2(i) {
         deleteBtns[i].addEventListener('click', function (e) {
+            // get data id by delete button
             var id = deleteBtns[i].getAttribute('data-id');
             e.preventDefault();
             if (confirm('確認刪除？')) {
@@ -16223,6 +16219,35 @@ function deleteBtnListener() {
     for (var i = 0; i < deleteBtns.length; i++) {
         _loop2(i);
     }
+}
+//---------------Button Listener----------------
+
+//----------Reveal on index interface-----------
+function readAccountData() {
+    var str = '\n    <thead>\n      <tr>\n        <th>\u6D88\u8CBB\u9805\u76EE</th>\n        <th>\u6D88\u8CBB\u985E\u5225</th>\n        <th>\u6D88\u8CBB\u91D1\u984D</th>\n        <th>\u6D88\u8CBB\u6642\u9593</th>\n        <th>\u64CD\u4F5C</th>\n      </tr>\n    </thead>  \n  ';
+    var accountRef = database.ref('account/');
+    var infoRef = document.querySelector('#data-chart-info');
+    var dataTableRef = document.querySelector('#data-table');
+
+    // 一次性讀取資料once
+    accountRef.once('value').then(function (snapshot) {
+        var data = snapshot.val();
+        console.log(data);
+        if (data === null) {
+            str += '<h4>目前沒有資料喔！</h4>';
+            dataTableRef.innerHTML = str;
+            infoRef.innerHTML = '<h4>目前沒有資料喔！</h4>';
+        } else {
+            loadChart(data);
+            Object.keys(data).forEach(function (key, index) {
+                str += '\n          <tr>\n            <td>' + data[key].title + '</td>\n            <td>' + data[key].type + '</td>\n            <td>NT ' + data[key].number + '</td>\n            <td>' + data[key].date + '</td>\n            <td>  \n              <button type="button" class="btn btn-primary update-btn" data-id="' + key + '">\u7DE8\u8F2F</button>\n              <button type="button" class="btn btn-danger delete-btn" data-id="' + key + '">\u522A\u9664</button>\n            </td>\n          </tr>\n        ';
+            });
+
+            document.querySelector('#data-table').innerHTML = str;
+            updateBtnListener();
+            deleteBtnListener();
+        }
+    });
 }
 
 function loadChart(rawData) {
@@ -16273,9 +16298,17 @@ function loadChart(rawData) {
         data: data
     });
 }
+//----------Reveal on index interface-----------
 
+
+//----------Route-----------
+//得到目前路徑
+//http://iSave/create.html
+//或http://iSave/update.html
+//pathname=/create.html
 var path = window.location.pathname;
 
+//routeing製作
 switch (path) {
     case '/iSave/create.html':
         submitListener('create');
@@ -16287,5 +16320,6 @@ switch (path) {
     default:
         readAccountData();
 }
+//----------Route-----------
 
 },{"chart.js":7,"uuid":48}]},{},[49]);
